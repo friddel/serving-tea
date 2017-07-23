@@ -1,4 +1,5 @@
 package waitress;
+
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -8,8 +9,9 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
 
 class RespondMenueToCustomer extends AchieveREResponder {
-	
-	public string Conversation="none";
+
+	String Conversation = "none";
+
 	public RespondMenueToCustomer(Waitress waitress, MessageTemplate mt) {
 		super(waitress, mt);
 		// TODO Auto-generated constructor stub
@@ -18,7 +20,8 @@ class RespondMenueToCustomer extends AchieveREResponder {
 	@Override
 	protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 		// send AGREE
-		
+		Conversation = request.getContent();
+		System.out.println(Conversation);
 		ACLMessage agree = request.createReply();
 		agree.setPerformative(ACLMessage.AGREE);
 		return agree;
@@ -32,8 +35,11 @@ class RespondMenueToCustomer extends AchieveREResponder {
 		// if agent AGREEd to request
 		// send INFORM
 		ACLMessage inform = request.createReply();
-		inform.setContent("Send Menue");
-		inform.setPerformative(ACLMessage.INFORM);
+		if (Conversation=="RequestMenu")
+			{
+			inform.setContent("Send Menu");
+			inform.setPerformative(ACLMessage.INFORM);
+			}
 		return inform;
 		// send FAILURE
 		// throw new FailureException("unexpected-error");

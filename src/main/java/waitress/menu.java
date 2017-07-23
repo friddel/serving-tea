@@ -1,6 +1,6 @@
 package waitress;
 
-public class menue {
+public class menu {
 
 	private String type;
 	private String preparation;
