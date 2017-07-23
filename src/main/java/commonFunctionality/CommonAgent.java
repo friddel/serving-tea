@@ -1,5 +1,7 @@
 package commonFunctionality;
 
-public class CommonAgent {
+import jade.core.Agent;
+
+public class CommonAgent extends Agent {
 
 }
