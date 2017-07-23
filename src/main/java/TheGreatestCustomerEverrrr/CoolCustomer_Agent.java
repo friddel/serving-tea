@@ -35,13 +35,13 @@ public class CoolCustomer_Agent extends Agent {
 			msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
 			msg.setContent(requestedAction);
 			
-			myAgent.addBehaviour(new RequestForMenu(myAgent, msg));
+			myAgent.addBehaviour(new RequestToDoSomething(myAgent, msg));
 		}
 		
 	}
 	
-	class RequestForMenu extends AchieveREInitiator {
-		public RequestForMenu(Agent a, ACLMessage msg) {
+	class RequestToDoSomething extends AchieveREInitiator {
+		public RequestToDoSomething(Agent a, ACLMessage msg) {
 			super(a, msg);
 		}
 
@@ -57,7 +57,7 @@ public class CoolCustomer_Agent extends Agent {
 
 		@Override
 		protected void handleInform(ACLMessage inform) {
-			System.out.println(inform.getContent());
+			System.out.println("received inform");
 		}
 
 		@Override
@@ -69,3 +69,4 @@ public class CoolCustomer_Agent extends Agent {
 	
 
 }
+
