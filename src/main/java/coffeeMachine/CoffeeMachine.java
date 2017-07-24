@@ -54,10 +54,14 @@ public class CoffeeMachine extends CommonAgent {
 	}
 	
 	class Recipes{
-		public Map<String, ArrayList<String>> menu = new HashMap<String, ArrayList<String>>();
+		public Map<String, List<String>> menu = new HashMap<String, List<String>>();
 		List<String> CoffeeWithMilkList = new ArrayList<String>();
-		CoffeeWithMilkList = ["boiling", "grinding", "milk"];
-		menu.put("CoffeeWithMilk", ["boiling", "grinding", "milk"]);
+		public Recipes () {
+			CoffeeWithMilkList.add("boiling");
+			CoffeeWithMilkList.add("gringing");
+			CoffeeWithMilkList.add("milk");
+			menu.put("CoffeeWithMilk", CoffeeWithMilkList);
+		}
 	}
 
 	class WaitingOrders extends AchieveREResponder {
