@@ -25,7 +25,7 @@ class RespondMenueToCustomer extends AchieveREResponder {
 		agree.setPerformative(ACLMessage.AGREE);
 		return agree;
 		// send REFUSE
-		// throw new RefuseException("check-failed");
+		//throw new RefuseException("check-failed");
 	}
 
 	@Override
@@ -33,14 +33,15 @@ class RespondMenueToCustomer extends AchieveREResponder {
 		// if agent AGREEd to request
 		// send INFORM
 		ACLMessage inform = request.createReply();
+		System.out.println("asjgdzjdsad");
 		if (Conversation == "RequestMenu") {
 			inform.setContent("Send Menu");
+			
 			inform.setPerformative(ACLMessage.INFORM);
 		}
 		return inform;
 		// send FAILURE
 		// throw new FailureException("unexpected-error");
 	}
-
 	private static final long serialVersionUID = -8009542545033008746L;
 }
