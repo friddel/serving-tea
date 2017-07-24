@@ -50,17 +50,29 @@ public class CoffeeMachine extends CommonAgent {
 		MessageTemplate reqTemp = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
 
 		addBehaviour(new WaitingOrders(this, reqTemp));
-		// addBehaviour(new ExecuteOrders(this, 2000));
 	}
 	
 	class Recipes{
 		public Map<String, List<String>> menu = new HashMap<String, List<String>>();
 		List<String> CoffeeWithMilkList = new ArrayList<String>();
+		List<String> CoffeeList = new ArrayList<String>();
+		List<String> TeaList = new ArrayList<String>();
+		
 		public Recipes () {
-			CoffeeWithMilkList.add("boiling");
-			CoffeeWithMilkList.add("gringing");
-			CoffeeWithMilkList.add("milk");
+			CoffeeWithMilkList.add("boiling water");
+			CoffeeWithMilkList.add("grinding beans");
+			CoffeeWithMilkList.add("bringing milk");
 			menu.put("CoffeeWithMilk", CoffeeWithMilkList);
+			CoffeeList.add("boiling water");
+			CoffeeList.add("grinding beans");
+			menu.put("Coffee", CoffeeList);
+			TeaList.add("boiling water");
+			TeaList.add("bringing tea leaves");
+			menu.put("Tea", TeaList);
+		}
+		
+		public Map<String, List<String>> getRecipe() {
+			return menu;
 		}
 	}
 
@@ -75,8 +87,11 @@ public class CoffeeMachine extends CommonAgent {
 		protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 			// send AGREE
 			ACLMessage agree = request.createReply();
+			agree.setContent(request.getContent());
 			agree.setPerformative(ACLMessage.AGREE);
-			System.out.println("agree");
+			System.out.println("agree " + agree.getContent());
+
+			addBehaviour(new ExecuteOrders(myAgent, 2000, agree));
 			return agree;
 			// send REFUSE
 			// throw new RefuseException("check-failed");
@@ -85,31 +100,36 @@ public class CoffeeMachine extends CommonAgent {
 
 	class ExecuteOrders extends TickerBehaviour {
 		private static final long serialVersionUID = -1534610326024914625L;
+		
+		public ACLMessage msg;
 
-		public ExecuteOrders(Agent a, long period) {
+		public ExecuteOrders(Agent a, long period, ACLMessage _msg) {
 			super(a, period);
+			msg = _msg;
 		}
 
 		@Override
 		protected void onTick() {
 			System.out.println("\nlooking for agents with printing service");
-			List<AID> agents = findAgents("printing");
-			if (!agents.isEmpty()) {
-				System.out.println("agents providing service are found. trying to print...");
-				String requestedAction = "work!";
+			Recipes menu = new Recipes();
+			List<String> recipe = menu.getRecipe().get(msg.getContent());
+			for (String ing : recipe) {
+				System.out.println(ing);				
+				List<AID> agents = findAgents(ing);
+				if (!agents.isEmpty()) {
+					System.out.println("robots are found. starting to make " + msg.getContent());
+					String requestedAction = "work!";
+					ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+					msg.addReceiver(agents.get(0));
+					msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+					msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+					msg.setContent(requestedAction);
 
-				ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-				msg.addReceiver(new AID(("boiling"), AID.ISLOCALNAME));
-				msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-				msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-				msg.setContent(requestedAction);
-
-				addBehaviour(new RequestToExecute(myAgent, msg));
-			} else {
-				System.out.println("no agents providing service are found");
-			}
-
-			
+					addBehaviour(new RequestToExecute(myAgent, msg));
+				} else {
+					System.out.println("no robots for" + ing + "are found");
+				}
+			}			
 		}
 
 		private List<AID> findAgents(String serviceName) {
