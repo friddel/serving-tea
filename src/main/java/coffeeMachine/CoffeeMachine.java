@@ -26,6 +26,8 @@ import jade.proto.AchieveREResponder;
 
 public class CoffeeMachine extends CommonAgent {
 	private static final long serialVersionUID = -5931717807805852930L;
+	
+	public ACLMessage starterMessage;
 
 	@Override
 	protected void setup() {
@@ -52,7 +54,7 @@ public class CoffeeMachine extends CommonAgent {
 
 		addBehaviour(new WaitingOrders(this, reqTemp));
 		
-		addBehaviour(new SimpleAgentWakerBehaviour(this, 5000));
+		addBehaviour(new SimpleAgentWakerBehaviour(this, 4000));
 	}
 	
 	class SimpleAgentWakerBehaviour extends WakerBehaviour {
@@ -108,6 +110,7 @@ public class CoffeeMachine extends CommonAgent {
 		@Override
 		protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 			// send AGREE
+			starterMessage = request;
 			ACLMessage agree = request.createReply();
 			agree.setContent(request.getContent());
 			agree.setPerformative(ACLMessage.AGREE);
@@ -136,6 +139,8 @@ public class CoffeeMachine extends CommonAgent {
 		private static final long serialVersionUID = -1534610326024914625L;
 		
 		public String obj;
+		public int recipeLen;
+		public int cnt = 0;
 
 		public ExecuteOrders(Agent a, long period, ACLMessage msg) {
 			super(a, period);
@@ -147,6 +152,9 @@ public class CoffeeMachine extends CommonAgent {
 			System.out.println("\nLooking for robots to make " + obj);
 			Recipes menu = new Recipes();
 			List<String> recipe = menu.getRecipe().get(obj);
+			
+			recipeLen = recipe.size();
+			cnt = 0;
 			
 			for (String ing : recipe) {
 				System.out.println("Looking for robots for " + ing);				
@@ -171,7 +179,6 @@ public class CoffeeMachine extends CommonAgent {
 					System.out.println("No robots for " + ing + " are found");
 				}
 			}
-			stop();
 		}
 		
 		@Override
@@ -207,23 +214,17 @@ public class CoffeeMachine extends CommonAgent {
 			}
 
 			@Override
-			protected void handleRefuse(ACLMessage refuse) {
-				System.out.println("received refuse");
-			}
-
-			@Override
-			protected void handleAgree(ACLMessage agree) {
-				System.out.println("received agree");
-			}
-
-			@Override
 			protected void handleInform(ACLMessage inform) {
-				System.out.println("received inform" + inform.getContent());
-			}
+				System.out.println(inform.getContent());
+				cnt += 1;
+				if (cnt == recipeLen) {
+					stop();
 
-			@Override
-			protected void handleFailure(ACLMessage failure) {
-				System.out.println("received failure");
+					ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+					msg.addReceiver(starterMessage.getSender());
+					msg.setContent(starterMessage.getContent());
+					send(msg);
+				}
 			}
 		}
 	}
