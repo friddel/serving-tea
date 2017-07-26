@@ -9,14 +9,11 @@ import java.util.Map;
 import commonFunctionality.CommonAgent;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -26,6 +23,8 @@ import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 public class CoffeeMachine extends CommonAgent {
+	private static final long serialVersionUID = -5931717807805852930L;
+
 	@Override
 	protected void setup() {
 		// description
@@ -120,6 +119,7 @@ public class CoffeeMachine extends CommonAgent {
 					System.out.println("robots are found. starting to make " + msg.getContent());
 					String requestedAction = "work!";
 					ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+					msg.setConversationId(ing);
 					msg.addReceiver(agents.get(0));
 					msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 					msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
@@ -152,6 +152,8 @@ public class CoffeeMachine extends CommonAgent {
 		}
 
 		class RequestToExecute extends AchieveREInitiator {
+			private static final long serialVersionUID = -8104498062148279796L;
+			
 			public RequestToExecute(Agent a, ACLMessage msg) {
 				super(a, msg);
 			}
@@ -175,19 +177,6 @@ public class CoffeeMachine extends CommonAgent {
 			protected void handleFailure(ACLMessage failure) {
 				System.out.println("received failure");
 			}
-
-			private static final long serialVersionUID = -8104498062148279796L;
-		}
-		
-		private void sendMessage(ACLMessage msgToLog, String agentName, String protocol) {
-			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID((agentName), AID.ISLOCALNAME));
-			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-			msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-			msg.setConversationId("machine");
-			msg.setContent(msgToLog.getContent());
-
-			send(msg);
 		}
 	}
 }
