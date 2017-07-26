@@ -54,11 +54,6 @@ protected String serviceName;
 		public RobotResponder(Agent a, MessageTemplate mt) {
 			super(a, mt);
 		}
-		@Override
-		protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-			return request;
-			// send AGREE
-		}
 
 		@Override
 		protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response)
