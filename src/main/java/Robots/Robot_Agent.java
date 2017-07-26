@@ -14,11 +14,16 @@ import jade.proto.AchieveREResponder;
 public class Robot_Agent extends Agent {
 
 private static final long serialVersionUID = -7418692714860762106L;
+protected String serviceName;
+
+	public Robot_Agent() {
+	// TODO Auto-generated constructor stub
+}
 
 	@Override
 	protected void setup() {
 		ServiceDescription serviceDescription = new ServiceDescription();
-		serviceDescription.setName("boiling water");
+		serviceDescription.setName(serviceName);
 		serviceDescription.setType("Coffee-machine");
 		DFAgentDescription agentDescription = new DFAgentDescription();
 		agentDescription.setName(getAID());
@@ -51,9 +56,8 @@ private static final long serialVersionUID = -7418692714860762106L;
 		@Override
 		protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response)
 				throws FailureException {
-			System.out.println("hehe");
 			ACLMessage inform = request.createReply();
-			inform.setContent("boiled!");
+			inform.setContent("Ended with " + serviceName);
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		}
