@@ -53,6 +53,7 @@ private static final long serialVersionUID = -7418692714860762106L;
 				throws FailureException {
 			System.out.println("hehe");
 			ACLMessage inform = request.createReply();
+			inform.setContent("boiled!");
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		}
