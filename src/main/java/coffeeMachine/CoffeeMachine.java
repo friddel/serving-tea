@@ -100,23 +100,29 @@ public class CoffeeMachine extends CommonAgent {
 	class ExecuteOrders extends TickerBehaviour {
 		private static final long serialVersionUID = -1534610326024914625L;
 		
-		public ACLMessage msg;
+		public String obj;
 
-		public ExecuteOrders(Agent a, long period, ACLMessage _msg) {
+		public ExecuteOrders(Agent a, long period, ACLMessage msg) {
 			super(a, period);
-			msg = _msg;
+			obj = msg.getContent();
 		}
 
 		@Override
 		protected void onTick() {
-			System.out.println("\nlooking for agents with printing service");
+			System.out.println("\nLooking for robots to make " + obj);
 			Recipes menu = new Recipes();
-			List<String> recipe = menu.getRecipe().get(msg.getContent());
+			List<String> recipe = menu.getRecipe().get(obj);
+			
 			for (String ing : recipe) {
-				System.out.println(ing);				
+				System.out.println("Looking for robots for " + ing);				
 				List<AID> agents = findAgents(ing);
 				if (!agents.isEmpty()) {
-					System.out.println("robots are found. starting to make " + msg.getContent());
+					System.out.println("Robots are found. Their names:");
+					for (AID ag : agents) {
+						System.out.println(ag.getName());
+					}
+					System.out.println("Starting to make " + obj);
+					
 					String requestedAction = "work!";
 					ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 					msg.setConversationId(ing);
@@ -127,9 +133,15 @@ public class CoffeeMachine extends CommonAgent {
 
 					addBehaviour(new RequestToExecute(myAgent, msg));
 				} else {
-					System.out.println("no robots for" + ing + "are found");
+					System.out.println("No robots for " + ing + " are found");
 				}
-			}			
+			}
+		}
+		
+		@Override
+		public void stop() {
+			System.out.println(obj + " is done");
+			super.stop();
 		}
 
 		private List<AID> findAgents(String serviceName) {
@@ -166,11 +178,13 @@ public class CoffeeMachine extends CommonAgent {
 			@Override
 			protected void handleAgree(ACLMessage agree) {
 				System.out.println("received agree");
+				stop();
 			}
 
 			@Override
 			protected void handleInform(ACLMessage inform) {
 				System.out.println("received inform");
+				stop();
 			}
 
 			@Override
