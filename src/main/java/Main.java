@@ -9,7 +9,11 @@ public class Main {
 				String[] parameters = new String[] { "-gui",
 						 "-host", "localhost",
 						//"waitress:waitress.Waitress;customer:TheGreatestCustomerEverrrr.CoolCustomer_Agent;" 
-						 "CoffeeMachine:coffeeMachine.CoffeeMachine;Boiler:Robots.Robot_Grinder;"};
+						 "CoffeeMachine:coffeeMachine.CoffeeMachine;"
+						 + "Boiler:Robots.Robot_Boiler;"
+						 + "Grinder:Robots.Robot_Grinder;"
+						 + "Milker:Robots.Robot_Milker;"
+						 + "Teaer:Robots.Robot_Teaer;"};
 				Boot.main(parameters);
 				
 		

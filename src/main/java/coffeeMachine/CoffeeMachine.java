@@ -10,10 +10,12 @@ import commonFunctionality.CommonAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.WakerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -49,6 +51,27 @@ public class CoffeeMachine extends CommonAgent {
 		MessageTemplate reqTemp = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
 
 		addBehaviour(new WaitingOrders(this, reqTemp));
+		
+		addBehaviour(new SimpleAgentWakerBehaviour(this, 5000));
+	}
+	
+	class SimpleAgentWakerBehaviour extends WakerBehaviour {
+		private static final long serialVersionUID = 2508808170658574583L;
+
+		public SimpleAgentWakerBehaviour(Agent a, long timeout) {
+			super(a, timeout);
+		}
+
+		@Override
+		public void onWake() {
+			// THIS MESSAGE IS FOR TESTING
+			ACLMessage testMsg = new ACLMessage(ACLMessage.REQUEST);
+			testMsg.addReceiver(new AID(("CoffeeMachine"), AID.ISLOCALNAME));
+			testMsg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			testMsg.setContent("CoffeeWithMilk");
+			send(testMsg);
+			//
+		}
 	}
 	
 	class Recipes{
@@ -88,12 +111,24 @@ public class CoffeeMachine extends CommonAgent {
 			ACLMessage agree = request.createReply();
 			agree.setContent(request.getContent());
 			agree.setPerformative(ACLMessage.AGREE);
-			System.out.println("agree " + agree.getContent());
+			System.out.println("[agree] I will do " + agree.getContent());
 
 			addBehaviour(new ExecuteOrders(myAgent, 2000, agree));
 			return agree;
 			// send REFUSE
 			// throw new RefuseException("check-failed");
+		}
+		
+		@Override
+		protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response)
+				throws FailureException {
+			// if agent AGREEd to request
+			// send INFORM
+			ACLMessage inform = request.createReply();
+			inform.setPerformative(ACLMessage.INFORM);
+			return inform;
+			// send FAILURE
+			// throw new FailureException("unexpected-error");
 		}
 	}
 
@@ -119,7 +154,7 @@ public class CoffeeMachine extends CommonAgent {
 				if (!agents.isEmpty()) {
 					System.out.println("Robots are found. Their names:");
 					for (AID ag : agents) {
-						System.out.println(ag.getName());
+						System.out.println(ag.getLocalName());
 					}
 					System.out.println("Starting to make " + obj);
 					
@@ -136,6 +171,7 @@ public class CoffeeMachine extends CommonAgent {
 					System.out.println("No robots for " + ing + " are found");
 				}
 			}
+			stop();
 		}
 		
 		@Override
@@ -178,13 +214,11 @@ public class CoffeeMachine extends CommonAgent {
 			@Override
 			protected void handleAgree(ACLMessage agree) {
 				System.out.println("received agree");
-				stop();
 			}
 
 			@Override
 			protected void handleInform(ACLMessage inform) {
-				System.out.println("received inform");
-				stop();
+				System.out.println("received inform" + inform.getContent());
 			}
 
 			@Override
