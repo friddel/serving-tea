@@ -54,12 +54,28 @@ protected String serviceName;
 		public RobotResponder(Agent a, MessageTemplate mt) {
 			super(a, mt);
 		}
+/*<<<<<<< HEAD
+=======
+
+		@Override
+		protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+			// send AGREE
+			ACLMessage agree = request.createReply();
+			agree.setContent(request.getContent());
+			agree.setPerformative(ACLMessage.AGREE);
+			System.out.println("[agree] I will do " + agree.getConversationId());
+
+			return agree;
+			// send REFUSE
+			// throw new RefuseException("check-failed");
+		}
+>>>>>>> branch 'master' of https://github.com/friddel/serving-tea.git*/
 
 		@Override
 		protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response)
 				throws FailureException {
 			ACLMessage inform = request.createReply();
-			inform.setContent("Ended with " + serviceName);
+			inform.setContent("[inform] Ended with " + serviceName);
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		}
