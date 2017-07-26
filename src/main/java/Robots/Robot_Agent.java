@@ -18,7 +18,7 @@ private static final long serialVersionUID = -7418692714860762106L;
 	@Override
 	protected void setup() {
 		ServiceDescription serviceDescription = new ServiceDescription();
-		serviceDescription.setName("boiling");
+		serviceDescription.setName("boiling water");
 		serviceDescription.setType("Coffee-machine");
 		DFAgentDescription agentDescription = new DFAgentDescription();
 		agentDescription.setName(getAID());

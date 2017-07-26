@@ -8,7 +8,8 @@ public class Main {
 				
 				String[] parameters = new String[] { "-gui",
 						 "-host", "localhost",
-						"waitress:waitress.Waitress;customer:TheGreatestCustomerEverrrr.CoolCustomer_Agent;" };
+						//"waitress:waitress.Waitress;customer:TheGreatestCustomerEverrrr.CoolCustomer_Agent;" 
+						 "CoffeeMachine:coffeeMachine.CoffeeMachine;Boiler:Robots.Robot_Agent;"};
 				Boot.main(parameters);
 				
 		
