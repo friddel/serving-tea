@@ -6,6 +6,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -51,6 +53,11 @@ protected String serviceName;
 	class RobotResponder extends AchieveREResponder {
 		public RobotResponder(Agent a, MessageTemplate mt) {
 			super(a, mt);
+		}
+		@Override
+		protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
+			return request;
+			// send AGREE
 		}
 
 		@Override
