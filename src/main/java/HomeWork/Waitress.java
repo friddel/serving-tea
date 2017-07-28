@@ -24,9 +24,11 @@ public class Waitress extends Agent {
 	ArrayList<String> menuForCustomer = new ArrayList<String>();
 
 	protected void setup() {
+
+		menuForCustomer.add("hot water");
 		menuForCustomer.add("tea");
 		menuForCustomer.add("coffee");
-		menuForCustomer.add("water");
+		
 		MessageTemplate template = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		addBehaviour(new RespondToCustomer(this, template, menuForCustomer));
 	}
