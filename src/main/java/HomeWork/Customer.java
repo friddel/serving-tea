@@ -94,9 +94,9 @@ public class Customer extends Agent {
 			System.out.println("Customer      : Thank you for the menu. This is what is offered: ");
 			for (int i = 0; i < receivedMenu.size(); i++) {
 				temp = receivedMenu.get(i);
-				System.out.println("                 "+i+": "+ temp);
+				System.out.println("                 " + i + ": " + temp);
 			}
-		DecideForItem(receivedMenu);
+			DecideForItem(receivedMenu);
 		}
 
 		@Override
@@ -107,10 +107,10 @@ public class Customer extends Agent {
 	}
 
 	public String DecideForItem(ArrayList<String> receivedMenu2) {
-		 Random randomGenerator = new Random();
-		 int randomInt = randomGenerator.nextInt(receivedMenu2.size());	
-		choice = receivedMenu2.get(randomInt);
-
+		// Random randomGenerator = new Random();
+		// int randomInt = randomGenerator.nextInt(receivedMenu2.size());
+		//choice = receivedMenu2.get(randomInt);
+		choice = receivedMenu2.get(0);
 		addBehaviour(new ItemRequest(choice));
 		return choice;
 
