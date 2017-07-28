@@ -1,5 +1,9 @@
-package waitress;
+package waitress.old;
+/*package waitress;
 
+import java.util.ArrayList;
+
+import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
@@ -7,25 +11,31 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
 
-class RespondMenueToCustomer extends AchieveREResponder {
-
+public class RespondToCustomer extends AchieveREResponder {
+public String CustomerOrder="none";
 	String Conversation = "none";
+	String dummy = "tea";
+	ArrayList<Object> menuForCustomer = new ArrayList<Object>();
 
-	public RespondMenueToCustomer(Waitress waitress, MessageTemplate mt) {
+	public RespondToCustomer(Waitress waitress, MessageTemplate mt) {
 		super(waitress, mt);
 		// TODO Auto-generated constructor stub
+	}
+
+	public RespondToCustomer(Agent a, MessageTemplate mt, ArrayList<Object> menuForCustomer) {
+		super(a, mt);
+		this.menuForCustomer = menuForCustomer;
 	}
 
 	@Override
 	protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
 		// send AGREE
 		Conversation = request.getContent();
-		System.out.println(Conversation);
 		ACLMessage agree = request.createReply();
 		agree.setPerformative(ACLMessage.AGREE);
 		return agree;
 		// send REFUSE
-		//throw new RefuseException("check-failed");
+		// throw new RefuseException("check-failed");
 	}
 
 	@Override
@@ -33,15 +43,28 @@ class RespondMenueToCustomer extends AchieveREResponder {
 		// if agent AGREEd to request
 		// send INFORM
 		ACLMessage inform = request.createReply();
-		System.out.println("asjgdzjdsad");
-		if (Conversation == "RequestMenu") {
-			inform.setContent("Send Menu");
-			
+		switch (Conversation.toString()) {
+		case "RequestMenu":
+			inform.setContent(dummy);
 			inform.setPerformative(ACLMessage.INFORM);
+			System.out.println("Waitress: This is the menu:  "+ Conversation);
+			break;
+		case "tea":
+			inform.setContent("none");
+			inform.setPerformative(ACLMessage.INFORM);
+			CustomerOrder= Conversation.toString();
+			System.out.println("Waitress: Dear Customer, you will get "+ Conversation);
+			
+			break;
+		default:
+			System.out.println("------>Waitress was fired!");
 		}
+
 		return inform;
 		// send FAILURE
 		// throw new FailureException("unexpected-error");
 	}
+
 	private static final long serialVersionUID = -8009542545033008746L;
 }
+*/
