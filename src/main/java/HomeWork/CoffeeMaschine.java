@@ -28,6 +28,7 @@ public class CoffeeMaschine extends Agent {
 	protected void setup() {
 		// description
 		ServiceDescription serviceDescription = new ServiceDescription();
+		serviceDescription.setName("HotWater");
 		serviceDescription.setName("tea");
 		serviceDescription.setName("coffee with milk");
 		serviceDescription.setName("coffee");
@@ -37,7 +38,6 @@ public class CoffeeMaschine extends Agent {
 		agentDescription.setName(getAID());
 		agentDescription.addServices(serviceDescription);
 		try {
-			// register DF
 			DFService.register(this, agentDescription);
 		} catch (FIPAException exception) {
 			exception.printStackTrace();
@@ -75,7 +75,7 @@ public class CoffeeMaschine extends Agent {
 		}
 		private static final long serialVersionUID = -8009542545033008746L;
 	}
-	
+/*	
 	public ACLMessage starterMessage;
 
 	class Recipes{
@@ -195,5 +195,5 @@ public class CoffeeMaschine extends Agent {
 			}
 		}
 	}
-
+*/
 }

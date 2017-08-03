@@ -7,29 +7,35 @@ import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.domain.FIPANames;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
+import jade.proto.AchieveREResponder;
+
 import java.util.Random;
 
 public class Customer extends Agent {
 	ArrayList<String> receivedMenu = new ArrayList<String>();
 	String sreceivedMenu;
-	String choice;
+	String choice= "HotWater";
 
 	@Override
 	protected void setup() {
-		addBehaviour(new MenuRequest(this, 2000));
+		addBehaviour(new MenuRequest(this));
 
 	}
 
-	class MenuRequest extends WakerBehaviour {
-		public MenuRequest(Agent a, long time) {
-			super(a, time);
+	class MenuRequest extends OneShotBehaviour {
+		public MenuRequest(Agent a) {
+			super(a);
 		}
 
 		@Override
-		protected void onWake() {
+		public void action() {
 			String requestedAction = "RequestMenu";
 			ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			msg.addReceiver(new AID(("waitress"), AID.ISLOCALNAME));
@@ -60,7 +66,6 @@ public class Customer extends Agent {
 			}
 		}
 	}
-
 	class RequestToDoSomethingNow extends AchieveREInitiator {
 		public RequestToDoSomethingNow(Agent a, ACLMessage msg) {
 			super(a, msg);
@@ -77,26 +82,9 @@ public class Customer extends Agent {
 
 		@Override
 		protected void handleInform(ACLMessage inform) {
-			// sreceivedMenu = inform.getContent();
-
-			try {
-				receivedMenu = (ArrayList) inform.getContentObject();
-			} catch (UnreadableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			/*
-			 * if (sreceivedMenu.matches("none")) { }else {
-			 */
-			String temp;
-
-			System.out.println("Customer      : Thank you for the menu. This is what is offered: ");
-			for (int i = 0; i < receivedMenu.size(); i++) {
-				temp = receivedMenu.get(i);
-				System.out.println("                 " + i + ": " + temp);
-			}
-			DecideForItem(receivedMenu);
+			sreceivedMenu = inform.getContent();
+			System.out.println("Customer      : Thank you for the menu. This is what is offered: " + sreceivedMenu);
+			DecideForItem(sreceivedMenu);
 		}
 
 		@Override
@@ -106,13 +94,9 @@ public class Customer extends Agent {
 
 	}
 
-	public String DecideForItem(ArrayList<String> receivedMenu2) {
-		// Random randomGenerator = new Random();
-		// int randomInt = randomGenerator.nextInt(receivedMenu2.size());
-		//choice = receivedMenu2.get(randomInt);
-		choice = receivedMenu2.get(0);
+	public void DecideForItem(String receivedMenu2) {
 		addBehaviour(new ItemRequest(choice));
-		return choice;
-
 	}
+	
+	//#######################################################
 }
